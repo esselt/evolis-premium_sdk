@@ -70,11 +70,8 @@ module Evolis
 
       def valid_response?(data)
         return false unless data.is_a?(Hash)
-
         return false if data['jsonrpc'] != JSON_RPC_VERSION
-
         return false unless data.has_key?('id')
-
         return false if data.has_key?('error') && data.has_key?('result')
 
         if data.has_key?('error')

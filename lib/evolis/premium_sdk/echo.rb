@@ -8,7 +8,7 @@ module Evolis
       end
 
       def echo(msg)
-        call('Echo', {
+        call_rpc('Echo', {
             data: msg
         })
       end

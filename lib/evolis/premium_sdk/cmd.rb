@@ -10,7 +10,7 @@ module Evolis
       end
 
       def send_command(device, command, timeout = TIMEOUT)
-        call('SendCommand', {
+        call_rpc('SendCommand', {
             command: command,
             timeout: timeout,
             device:  device
@@ -18,13 +18,13 @@ module Evolis
       end
 
       def get_status(device)
-        call('GetStatus', {
+        call_rpc('GetStatus', {
             device: device
         })
       end
 
       def reset_com(device, timeout = TIMEOUT)
-        call('ResetCom', {
+        call_rpc('ResetCom', {
             timeout: timeout,
             device:  device
         })

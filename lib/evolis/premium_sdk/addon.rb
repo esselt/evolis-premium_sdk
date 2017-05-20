@@ -8,7 +8,7 @@ module Evolis
       end
 
       def launch(command, data)
-        call('Launch', {
+        call_rpc('Launch', {
             command: command,
             data:    data
         })

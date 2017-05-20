@@ -8,37 +8,49 @@ module Evolis
       end
 
       def begin(device)
-        @session = call('Begin', {
+        active_session call_rpc('Begin', {
             device: device
         })
       end
 
-      def set(session = @session, data)
+      def set(data)
+        raise Error::NoActiveSessionError.new          unless active_session?
+        raise Error::InvalidPrintSettingError.new data unless valid_settings?(data)
+
         data = [data] unless data.is_a?(Array)
-        call('Set', {
-            session: session,
+        call_rpc('Set', {
+            session: active_session,
             data:    data.join(';')
         })
       end
 
-      def set_bitmap(session = @session, face = 'front', panel = 'color', data)
-        call('SetBitmap', {
-            session: session,
+      def set_bitmap(face = 'front', panel = 'color', data)
+        raise Error::NoActiveSessionError.new   unless active_session?
+        raise Error::NoSuchFaceError.new face   unless %w[front back].include?(face.downcase!)
+        raise Error::NoSuchPanelError.new panel unless %w[color resin varnish].include?(panel.downcase!)
+        raise Error::Base64FormatError.new data unless valid_base64?(data)
+
+        call_rpc('SetBitmap', {
+            session: active_session,
             face:    face,
             panel:   panel,
             data:    data
         })
       end
 
-      def print(session = @session)
-        call('Print', {
-            session: session
+      def print
+        raise Error::NoActiveSessionError.new unless active_session?
+
+        call_rpc('Print', {
+            session: active_session
         })
       end
 
-      def end(session = @session)
-        call('End', {
-            session: session
+      def end
+        raise Error::NoActiveSessionError.new unless active_session?
+
+        call_rpc('End', {
+            session: active_session
         })
       end
     end
