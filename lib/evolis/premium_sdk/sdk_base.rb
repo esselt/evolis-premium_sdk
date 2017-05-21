@@ -11,9 +11,12 @@ module Evolis
       end
 
       def call_rpc(method, args)
-        resp = @rpc.call("#{@service.upcase}.#{method.capitalize}", args)
+        method = sanitize_parameters(method)
+        args   = sanitize_parameters(args)
+        resp   = @rpc.call("#{@service}.#{method}", args)
 
         return true if resp == 'OK'
+        return resp
       end
 
       def response
@@ -97,6 +100,12 @@ module Evolis
         return false if active_session.empty?
 
         return true
+      end
+
+      def sanitize_parameters(param)
+        return param.map { |p| String(p) }                      if param.is_a?(Array)
+        return param.map { |k, v| [String(k), String(v)] }.to_h if param.is_a?(Hash)
+        return String(param)
       end
     end
   end

@@ -3,7 +3,7 @@ require 'evolis/premium_sdk/sdk_base'
 module Evolis
   module PremiumSdk
     class Cmd < SdkBase
-      TIMEOUT = 3000
+      TIMEOUT = '3000'
 
       def initialize(host, port)
         super(host, port, 'CMD')
