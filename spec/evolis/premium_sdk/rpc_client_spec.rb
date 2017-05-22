@@ -58,47 +58,47 @@ module Evolis::PremiumSdk
           }
       }
 
-      it 'valid json is true' do
+      it 'valid json returns true' do
         expect(resource.valid_response? json).to be true
       end
 
-      it 'valid error json is true' do
+      it 'valid error json returns true' do
         expect(resource.valid_response? error_json).to be true
       end
 
-      it 'not Hash return false' do
+      it 'not Hash returns false' do
         expect(resource.valid_response? json.to_s).to be false
       end
 
-      it 'worng JSONRPC version return false' do
+      it 'wrong JSONRPC version returns false' do
         expect(resource.valid_response?json.merge('jsonrpc' => '1.0')).to be false
       end
 
-      it 'no id return false' do
+      it 'no id returns false' do
         expect(resource.valid_response? json.select { |k,v| k != 'id'}).to be false
       end
 
-      it 'with error and result return false' do
+      it 'with error and result returns false' do
         expect(resource.valid_response? json.merge(error_json)).to be false
       end
 
-      it 'error is not hash' do
+      it 'error not Hash returns false' do
         expect(resource.valid_response? error_json.merge('error' => 'String')).to be false
       end
 
-      it 'error has no code' do
+      it 'error has no code returns false' do
         expect(resource.valid_response? error_json['error'].select { |k,v| k != 'code'}).to be false
       end
 
-      it 'error has no message' do
+      it 'error has no message returns false' do
         expect(resource.valid_response? error_json['error'].select { |k,v| k != 'message'}).to be false
       end
 
-      it 'error code is not Fixnum' do
+      it 'error code not Fixnum returns false' do
         expect(resource.valid_response? error_json['error']['code'] = '1').to be false
       end
 
-      it 'error message is not String' do
+      it 'error message not String returns false' do
         expect(resource.valid_response? error_json['error']['message'] = 1).to be false
       end
     end
