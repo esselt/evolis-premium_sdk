@@ -4,7 +4,7 @@ module Evolis
   module PremiumSdk
     class Settings < SdkBase
       def initialize(host, port)
-        super(host, port, 'SETTINGS')
+        super(host, port, 'SETTING')
       end
 
       def begin(device)
@@ -15,19 +15,20 @@ module Evolis
 
       def export(format = 'printer')
         raise Error::NoActiveSessionError.new            unless active_session?
-        raise Error::InvalidExportFormatError.new format unless %w[printer text xml].include?(format.downcase!)
+        raise Error::InvalidExportFormatError.new format unless %w[printer text xml].include?(format.downcase)
 
-        response = call_rpc('Export', {
+        resp = call_rpc('Export', {
             session: self.active_session,
             format:  format
         })
 
-        return response.split(';') if format == 'text'
+        return resp.split(';') if format == 'text'
+        return resp
       end
 
       def import(format = 'printer', data = nil)
         raise Error::NoActiveSessionError.new            unless active_session?
-        raise Error::InvalidExportFormatError.new format unless %w[printer text xml].include?(format.downcase!)
+        raise Error::InvalidImportFormatError.new format unless %w[printer default xml].include?(format.downcase)
         raise Error::Base64FormatError.new data          if format == 'xml'
 
         params = {
