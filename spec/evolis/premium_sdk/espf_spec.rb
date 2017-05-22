@@ -33,31 +33,31 @@ module Evolis::PremiumSdk
     end
 
     describe '#valid_param?' do
-      it 'invalid key' do
+      it '__ERROR__ returns false' do
         expect(resource.valid_param? '__ERROR__').to be false
       end
 
-      it 'valid key' do
+      it 'ESPFService.version returns true' do
         expect(resource.valid_param? 'ESPFService.version').to be true
       end
 
       describe 'validate array of elements' do
-        it 'valid' do
+        it 'ESPFServerManager.tcpenabled=true returns true' do
           expect(resource.valid_param?('ESPFServerManager.tcpenabled', 'true')).to be true
         end
 
-        it 'invalid' do
+        it 'ESPFServerManager.tcpenabled=__ERROR__ returns false' do
           expect(resource.valid_param?('ESPFServerManager.tcpenabled', '__ERROR__')).to be false
         end
       end
 
       describe 'validate regex match' do
-        it 'valid' do
+        it 'ESPFServerManager.port=18000 returns true' do
           expect(resource.valid_param?('ESPFServerManager.port', '18000')).to be true
         end
 
-        it 'invalid' do
-          expect(resource.valid_param?('ESPFServerManager.port', 'false')).to be false
+        it 'ESPFServerManager.port=__ERROR__ returns false' do
+          expect(resource.valid_param?('ESPFServerManager.port', '__ERROR__')).to be false
         end
       end
     end
