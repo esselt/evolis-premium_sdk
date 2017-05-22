@@ -2,10 +2,9 @@ require 'spec_helper'
 
 module Evolis::PremiumSdk
   RSpec.describe Supervision do
+    let(:resource) { Supervision.new HOST, PORT }
 
     # Does not have the opportunity to test AddDevice and RemoveDevice, but should not be much errors there
-
-    let(:resource) { Supervision.new HOST, PORT }
 
     it '#new is class Print' do
       expect(resource).to be_kind_of(Supervision)
@@ -54,10 +53,8 @@ module Evolis::PremiumSdk
         expect{resource.set_event DEVICE, 'INF_RIBBON_LOW', '__ERROR__'}.to raise_error(Error::InvalidActionError)
       end
 
-      it 'valid event and action returns true' do
-        # Impossible to test before events occur
-        #expect{resource.set_event DEVICE, 'INF_RIBBON_LOW', 'OK'}.to be(true)
-      end
+      # Impossible to test before events occur
+      #expect{resource.set_event DEVICE, 'INF_RIBBON_LOW', 'OK'}.to be(true)
     end
 
     describe '#print_event' do
