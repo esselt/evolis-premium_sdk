@@ -8,7 +8,7 @@ module Evolis
       end
 
       def begin(device)
-        active_session call_rpc('Begin', {
+        self.active_session = call_rpc('Begin', {
             device: device
         })
       end
@@ -18,7 +18,7 @@ module Evolis
         raise Error::InvalidExportFormatError.new format unless %w[printer text xml].include?(format.downcase!)
 
         response = call_rpc('Export', {
-            session: active_session,
+            session: self.active_session,
             format:  format
         })
 
@@ -31,7 +31,7 @@ module Evolis
         raise Error::Base64FormatError.new data          if format == 'xml'
 
         params = {
-            session: active_session,
+            session: self.active_session,
             format:  format
         }
         params[:data] = data if format == 'xml'
@@ -44,7 +44,7 @@ module Evolis
         raise Error::InvalidPrintSettingError.new key unless valid_settings?(key, true)
 
         call_rpc('Get', {
-            session: active_session,
+            session: self.active_session,
             data:    key
         })
       end
@@ -54,7 +54,7 @@ module Evolis
         raise Error::InvalidPrintSettingError.new key unless valid_settings?("#{key}=#{value}")
 
         call_rpc('Set', {
-            session: active_session,
+            session: self.active_session,
             data:    "#{key}=#{value}"
         })
       end
@@ -63,7 +63,7 @@ module Evolis
         raise Error::NoActiveSessionError.new unless active_session?
 
         call_rpc('End', {
-            session: active_session
+            session: self.active_session
         })
       end
     end

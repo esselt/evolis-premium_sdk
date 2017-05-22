@@ -27,8 +27,6 @@ module Evolis
         @rpc.request
       end
 
-      private
-
       SETTINGS = {
           GDuplexMode: %w[SIMPLEX DUPLEX_CC DUPLEX_CM DUPLEX_MC DUPLEX_MM],
           GInputTray: %w[FEEDER AUTO MANUAL PRINTER],
@@ -94,10 +92,10 @@ module Evolis
       end
 
       def active_session?
-        return false unless active_session
-        return false if active_session == nil
-        return false unless active_session.is_a?(String)
-        return false if active_session.empty?
+        return false unless self.active_session
+        return false if self.active_session == nil
+        return false unless self.active_session.is_a?(String)
+        return false if self.active_session.empty?
 
         return true
       end

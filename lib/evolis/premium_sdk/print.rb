@@ -8,7 +8,7 @@ module Evolis
       end
 
       def begin(device)
-        active_session call_rpc('Begin', {
+        self.active_session = call_rpc('Begin', {
             device: device
         })
       end
@@ -19,7 +19,7 @@ module Evolis
 
         data = [data] unless data.is_a?(Array)
         call_rpc('Set', {
-            session: active_session,
+            session: self.active_session,
             data:    data.join(';')
         })
       end
@@ -31,7 +31,7 @@ module Evolis
         raise Error::Base64FormatError.new data unless valid_base64?(data)
 
         call_rpc('SetBitmap', {
-            session: active_session,
+            session: self.active_session,
             face:    face,
             panel:   panel,
             data:    data
@@ -42,7 +42,7 @@ module Evolis
         raise Error::NoActiveSessionError.new unless active_session?
 
         call_rpc('Print', {
-            session: active_session
+            session: self.active_session
         })
       end
 
@@ -50,7 +50,7 @@ module Evolis
         raise Error::NoActiveSessionError.new unless active_session?
 
         call_rpc('End', {
-            session: active_session
+            session: self.active_session
         })
       end
     end

@@ -7,11 +7,11 @@ module Evolis
         super(host, port, 'SUPERVISION')
       end
 
-      def list(device, level = 2)
+      def list(type_of_device, level = 2)
         raise Error::InvalidStateLevelError.new level unless (0..2).cover?(level)
 
         call_rpc('List', {
-            device: device,
+            device: type_of_device,
             level:  String(level)
         }).split(';')
       end
@@ -66,8 +66,6 @@ module Evolis
           return events[event.to_sym] if events.has_key?[event.to_sym]
         end
       end
-
-      private
 
       def validate_event?(event)
         return ERROR_EVENTS.merge(WARNING_EVENTS).has_key?(event.upcase!)

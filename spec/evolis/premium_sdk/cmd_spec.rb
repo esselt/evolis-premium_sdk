@@ -1,26 +1,45 @@
 require 'spec_helper'
 
-RSpec.describe Evolis::PremiumSdk::Cmd do
-  it 'new be Cmd class' do
-    expect(Evolis::PremiumSdk::Cmd.new HOST, PORT).to be_kind_of(Evolis::PremiumSdk::Cmd)
-  end
+module Evolis::PremiumSdk
+  RSpec.describe Cmd do
+    let(:resource) { Cmd.new HOST, PORT }
 
-  it 'send command and get response' do
-    cmd = Evolis::PremiumSdk::Cmd.new HOST, PORT
-    expect(cmd.send_command DEVICE, 'Rfv').to be_kind_of(String)
-    expect(cmd.send_command DEVICE, '__ERROR__').to eq('ERROR CDE')
-    expect{cmd.send_command '__ERROR__', 'Rfv'}.to raise_error(Evolis::PremiumSdk::Error::ServerError)
-  end
+    it '#new' do
+      expect(resource).to be_kind_of(Cmd)
+    end
 
-  it 'get status and get response' do
-    cmd = Evolis::PremiumSdk::Cmd.new HOST, PORT
-    expect(cmd.get_status DEVICE).to be_kind_of(String)
-    expect{cmd.get_status '__ERROR__'}.to raise_error(Evolis::PremiumSdk::Error::ServerError)
-  end
+    describe '#send_command' do
+      it 'command Rfv responds with result' do
+        expect(resource.send_command DEVICE, 'Rfv').to be_kind_of(String)
+      end
 
-  it 'reset communication and get true' do
-    cmd = Evolis::PremiumSdk::Cmd.new HOST, PORT
-    expect(cmd.reset_com DEVICE).to be true
-    expect{cmd.reset_com '__ERROR__'}.to raise_error(Evolis::PremiumSdk::Error::ServerError)
+      it 'command __ERROR__ responds with "ERROR CDE"' do
+        expect(resource.send_command DEVICE, '__ERROR__').to eq('ERROR CDE')
+      end
+
+      it 'device __ERROR__ raise ServerError' do
+        expect{resource.send_command '__ERROR__', 'Rfv'}.to raise_error(Error::ServerError)
+      end
+    end
+
+    describe '#get_status' do
+      it "device #{DEVICE} responds with result" do
+        expect(resource.get_status DEVICE).to be_kind_of(String)
+      end
+
+      it 'device __ERROR__ raise ServerError' do
+        expect{resource.get_status '__ERROR__'}.to raise_error(Error::ServerError)
+      end
+    end
+
+    describe '#reset_com' do
+      it "device #{DEVICE} respond true" do
+        expect(resource.reset_com DEVICE).to be true
+      end
+
+      it 'device __ERROR__ raise ServerError' do
+        expect{resource.reset_com '__ERROR__'}.to raise_error(Error::ServerError)
+      end
+    end
   end
 end

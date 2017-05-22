@@ -1,15 +1,22 @@
 require 'spec_helper'
 
-RSpec.describe Evolis::PremiumSdk::Echo do
-  it 'new be Cmd class' do
-    expect(Evolis::PremiumSdk::Echo.new HOST, PORT).to be_kind_of(Evolis::PremiumSdk::Echo)
-  end
+module Evolis::PremiumSdk
+  RSpec.describe Echo do
+    let(:resource) { Echo.new HOST, PORT }
 
-  it 'send echo and get response' do
-    echo = Evolis::PremiumSdk::Echo.new HOST, PORT
+    it '#new is class Echo' do
+      expect(resource).to be_kind_of(Echo)
+    end
 
-    msg = 'Small talk'
-    expect(echo.echo msg).to eq(msg)
-    expect(echo.echo '').to eq('')
+    describe '#echo' do
+      it 'mirrors output' do
+        msg = 'Mirror'
+        expect(resource.echo msg).to eq(msg)
+      end
+
+      it 'empty is ok' do
+        expect(resource.echo '').to eq('')
+      end
+    end
   end
 end
