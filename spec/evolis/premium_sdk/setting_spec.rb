@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 module Evolis::PremiumSdk
-  RSpec.describe Settings do
-    let(:resource) { Settings.new HOST, PORT }
+  RSpec.describe Setting do
+    let(:resource) { Setting.new HOST, PORT }
 
     it '#new is class Print' do
-      expect(resource).to be_kind_of(Settings)
+      expect(resource).to be_kind_of(Setting)
     end
 
     context 'no session' do
@@ -95,7 +95,12 @@ module Evolis::PremiumSdk
           expect{resource.get '__ERROR__'}.to raise_error(Error::InvalidPrintSettingError)
         end
 
-        it 'key GDuplexMode returns string' do
+        it 'key GDuplexMode raise ServerError (before import)' do
+          expect{resource.get 'GDuplexMode'}.to raise_error(Error::ServerError, /import not done/)
+        end
+
+        it 'key GDuplexMode returns String (after import)' do
+          resource.import 'printer'
           expect(resource.get 'GDuplexMode').to be_kind_of(String)
         end
       end

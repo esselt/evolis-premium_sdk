@@ -2,7 +2,7 @@ require 'evolis/premium_sdk/sdk_base'
 
 module Evolis
   module PremiumSdk
-    class Settings < SdkBase
+    class Setting < SdkBase
       def initialize(host, port)
         super(host, port, 'SETTING')
       end

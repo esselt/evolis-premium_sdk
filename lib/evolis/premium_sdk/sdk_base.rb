@@ -70,8 +70,12 @@ module Evolis
         settings = [settings] unless settings.is_a?(Array)
 
         settings.each do |pair|
-          return false unless pair.include?('=')
-          setting, value = pair.split('=')
+          if key_only
+            setting = pair
+          else
+            return false unless pair.include?('=')
+            setting, value = pair.split('=')
+          end
 
           return false unless SETTINGS.has_key?(setting.to_sym)
 
