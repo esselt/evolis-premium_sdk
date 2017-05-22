@@ -30,9 +30,9 @@ module Evolis
         return false unless params.has_key?(key.to_sym)
 
         if value
-          return false if value.is_a?(String) and value.empty?
-          return false if params[key.to_sym].is_a?(Array) and !params[key.to_sym].include?(value)
-          return false if params[key.to_sym].is_a?(Regexp) and value !~ params[key.to_sym]
+          return false if value.is_a?(String) && value.empty?
+          return false if params[key.to_sym].is_a?(Array) && !params[key.to_sym].include?(value)
+          return false if params[key.to_sym].is_a?(Regexp) && value !~ params[key.to_sym]
         end
 
         return true

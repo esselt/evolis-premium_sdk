@@ -74,10 +74,10 @@ module Evolis
 
           unless key_only
             return false if !value
-            return false if value.is_a?(String) and value.empty?
-            return false if SETTINGS[setting.to_sym].is_a?(Array) and !SETTINGS[setting.to_sym].include?(value)
-            return false if SETTINGS[setting.to_sym].is_a?(Class) and !value.is_a?(SETTINGS[setting.to_sym])
-            return false if SETTINGS[setting.to_sym].is_a?(Regexp) and value.is_a?(String) and value !~ SETTINGS[setting.to_sym]
+            return false if value.is_a?(String) && value.empty?
+            return false if SETTINGS[setting.to_sym].is_a?(Array) && !SETTINGS[setting.to_sym].include?(value)
+            return false if SETTINGS[setting.to_sym].is_a?(Class) && !value.is_a?(SETTINGS[setting.to_sym])
+            return false if SETTINGS[setting.to_sym].is_a?(Regexp) && value.is_a?(String) && value !~ SETTINGS[setting.to_sym]
           end
 
           return true
