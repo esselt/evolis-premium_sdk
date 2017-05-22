@@ -17,14 +17,14 @@ module Evolis
         raise Error::NoActiveSessionError.new          unless active_session?
         raise Error::InvalidPrintSettingError.new data unless valid_settings?(data)
 
-        data = [data] unless data.is_a?(Array)
+        data = data.join(';') if data.is_a?(Array)
         call_rpc('Set', {
             session: self.active_session,
-            data:    data.join(';')
+            data:    data
         })
       end
 
-      def set_bitmap(face = 'front', panel = 'color', data)
+      def set_bitmap(data, face = 'front', panel = 'color')
         raise Error::NoActiveSessionError.new   unless active_session?
         raise Error::NoSuchFaceError.new face   unless %w[front back].include?(face.downcase!)
         raise Error::NoSuchPanelError.new panel unless %w[color resin varnish].include?(panel.downcase!)

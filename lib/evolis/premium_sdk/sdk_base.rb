@@ -66,7 +66,9 @@ module Evolis
       }
 
       def valid_settings?(settings, key_only = false)
+        settings = settings.split(';') if settings.include?(';')
         settings = [settings] unless settings.is_a?(Array)
+
         settings.each do |pair|
           return false unless pair.include?('=')
           setting, value = pair.split('=')
