@@ -68,9 +68,10 @@ module Evolis
       def valid_settings?(settings, key_only = false)
         settings = [settings] unless settings.is_a?(Array)
         settings.each do |pair|
+          return false unless pair.include?('=')
           setting, value = pair.split('=')
 
-          return false unless SETTINGS.has_key?(setting)
+          return false unless SETTINGS.has_key?(setting.to_sym)
 
           unless key_only
             return false if !value
