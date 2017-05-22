@@ -35,11 +35,17 @@ module Evolis
       end
 
       def get_event(device)
-        event, actions = call_rpc('GetEvent', {
+        resp = call_rpc('GetEvent', {
             device: device
-        }).split(':')
+        })
 
-        return event, actions.split(',')
+        if resp.include?(':')
+          event, actions = resp.split(':')
+          actions = actions.include?(',') ? actions.split(',') : [actions]
+          return event, actions
+        else
+          return [resp]
+        end
       end
 
       def set_event(device, event, action)
