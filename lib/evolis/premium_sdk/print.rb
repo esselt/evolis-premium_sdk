@@ -26,8 +26,8 @@ module Evolis
 
       def set_bitmap(data, face = 'front', panel = 'color')
         raise Error::NoActiveSessionError.new   unless active_session?
-        raise Error::NoSuchFaceError.new face   unless %w[front back].include?(face.downcase!)
-        raise Error::NoSuchPanelError.new panel unless %w[color resin varnish].include?(panel.downcase!)
+        raise Error::NoSuchFaceError.new face   unless %w[front back].include?(face.downcase)
+        raise Error::NoSuchPanelError.new panel unless %w[color resin varnish].include?(panel.downcase)
         raise Error::Base64FormatError.new data unless valid_base64?(data)
 
         call_rpc('SetBitmap', {
