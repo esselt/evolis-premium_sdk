@@ -49,8 +49,8 @@ module Evolis
       end
 
       def set_event(device, event, action)
-        raise Error::InvalidEventError.new event unless validate_event?(event.upcase!)
-        raise Error::InvalidActionError.new action unless %w[CANCEL OK RETRY].include?(action.upcase!)
+        raise Error::InvalidEventError.new event unless validate_event?(event.upcase)
+        raise Error::InvalidActionError.new action unless %w[CANCEL OK RETRY].include?(action.upcase)
 
         call_rpc('SetEvent', {
             action: "#{event}:#{action}",
@@ -67,14 +67,16 @@ module Evolis
         }
       end
 
-      def print_state(event)
+      def print_event(event)
         list_states.each do |status, events|
-          return events[event.to_sym] if events.has_key?[event.to_sym]
+          return events[event.to_sym] if events.has_key?(event.to_sym)
         end
+
+        raise Error::InvalidEventError.new event
       end
 
       def validate_event?(event)
-        return ERROR_EVENTS.merge(WARNING_EVENTS).has_key?(event.upcase!)
+        return ERROR_EVENTS.merge(WARNING_EVENTS).has_key?(event.to_sym)
       end
 
       ERROR_EVENTS = {
