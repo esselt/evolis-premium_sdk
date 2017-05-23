@@ -21,7 +21,12 @@ Or install it yourself as:
 
 ## Usage
 
-Require the library and then use the classes as their own services. The code documents the usage.
+Require the library and then use the classes as their own services or set up a new Sdk class and use all the other classes from that.
+The code documents the usage.
+
+    require 'evolis/premium_sdk'
+    sdk = Evolis::PremiumSdk::Sdk.new '127.0.0.1', 18000
+    sdk.echo.echo 'Hello World'
 
 ## Development
 
