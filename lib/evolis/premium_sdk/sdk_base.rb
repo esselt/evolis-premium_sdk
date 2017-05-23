@@ -3,13 +3,25 @@ require 'evolis/premium_sdk/rpc_client'
 module Evolis
   module PremiumSdk
     class SdkBase
+      # @return [String] returns the active session
       attr_accessor :active_session
 
+      # Initalizes the class, sets default options
+      #
+      # @param host [String] host or ip to Premium SDK API
+      # @param port [String, Fixnum] port to Premium SDK API
+      # @param service [String] servicename, used only internally (e.g. CMD or PRINT)
       def initialize(host, port, service)
         @rpc = RpcClient.new(host, port)
         @service = service
       end
 
+      # Makes the call to the API and returns results
+      #
+      # @param method [String] method name for the service
+      # @param args [String] arguments and parameters to send to service
+      # @return [String] returns result parameter from the response
+      # @return [true] if result is "OK"
       def call_rpc(method, args)
         method = sanitize_parameters(method)
         args   = sanitize_parameters(args)
@@ -19,14 +31,21 @@ module Evolis
         return resp
       end
 
+      # Method to lookup the full response
+      # @return [Hash] full json response
+      # @return [nil] before first response
       def response
         @rpc.response
       end
 
+      # Method to lookup the full request
+      # @return [Hash] full json request
+      # @return (nil) before first request
       def request
         @rpc.request
       end
 
+      # Settings and their values allowed to be used when getting and setting settings for print
       SETTINGS = {
           GDuplexMode: %w[SIMPLEX DUPLEX_CC DUPLEX_CM DUPLEX_MC DUPLEX_MM],
           GInputTray: %w[FEEDER AUTO MANUAL PRINTER],
@@ -65,6 +84,12 @@ module Evolis
           RawData: String,
       }
 
+      # Checks if settings supplied are valid
+      #
+      # @param settings [String, Array] setting and value,
+      #   as "setting=value;setting2=value2" or ["setting=value","setting2=value2"]
+      # @param key_only [true, false] used for checking if only setting without value. Set to true for setting only.
+      # @return [true, false] true if valid settings, false if not
       def valid_settings?(settings, key_only = false)
         settings = settings.split(';') if settings.include?(';')
         settings = [settings] unless settings.is_a?(Array)
@@ -91,6 +116,10 @@ module Evolis
         end
       end
 
+      # Basic checking for valid base64 string, as used in the SDK
+      #
+      # @param string [String] the base64 encoded data
+      # @return [true, false] true if valid base64 string, false if not
       def valid_base64?(string)
         return false unless string.is_a?(String)
         return false unless string.start_with?('base64:')
@@ -98,6 +127,8 @@ module Evolis
         return true
       end
 
+      # Checks if there is an active session
+      # @return [true, false] true if exist, false if not
       def active_session?
         return false unless self.active_session
         return false if self.active_session == nil
@@ -107,6 +138,11 @@ module Evolis
         return true
       end
 
+      # Sanitizes parameters so they're not anything other than a String
+      #
+      # @param param [Any type] parameters to be sanitized
+      # @return [Hash, Array, String] Hash and Array get sanitized and returned as Hash and Array,
+      #   everything else becomes a String
       def sanitize_parameters(param)
         return param.map { |p| String(p) }                      if param.is_a?(Array)
         return param.map { |k, v| [String(k), String(v)] }.to_h if param.is_a?(Hash)

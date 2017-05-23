@@ -3,10 +3,21 @@ require 'evolis/premium_sdk/sdk_base'
 module Evolis
   module PremiumSdk
     class Supervision < SdkBase
+
+      # Initializes the class and sets SDK host and port
+      #
+      # @param host [String] host or IP for SDK
+      # @param port [String, Fixnum] port for SDK
       def initialize(host, port)
         super(host, port, 'SUPERVISION')
       end
 
+      # List all subscribed devices
+      #
+      # @param type_of_device [String] type of printer to list
+      # @param level [Fixnum] state level to list, printername, major and minor (0, 1, 2). Level 2 lists all states.
+      # @return [Array] list of printers and states
+      # @raise [Error::InvalidStateLevelError] if level not valid
       def list(type_of_device, level = 2)
         raise Error::InvalidStateLevelError.new level unless (0..2).cover?(level)
 
@@ -16,24 +27,40 @@ module Evolis
         }).split(';')
       end
 
+      # Subscribes a new device to the notification service
+      #
+      # @param device [String] printer name
+      # @return [true] on successful add
       def add_device(device)
         call_rpc('AddDevice', {
             device: device
         })
       end
 
+      # Unsubscribes a new device to the notification service
+      #
+      # @param device [String] printer name
+      # @return [true] on successful removal
       def remove_device(device)
         call_rpc('RemoveDevice', {
             device: device
         })
       end
 
+      # Requests the state of a device
+      #
+      # @param device [String] printer name
+      # @return [Array] major and minor state in array
       def get_state(device)
         call_rpc('GetState', {
             device: device
         }).split(',')
       end
 
+      # Returns the notification of an unexpected event, as well as the list of actions for a device
+      #
+      # @param device [String] printer name
+      # @return [Array] minor state of printer, with actions if available
       def get_event(device)
         resp = call_rpc('GetEvent', {
             device: device
@@ -48,6 +75,14 @@ module Evolis
         end
       end
 
+      # Executes an action when an unexpected event is notified on a device during printing
+      #
+      # @param device [String] printer name
+      # @param event [String] minor state of printer
+      # @param action [String] action to apply to minor state
+      # @return [true] if action successful
+      # @raise [Error::InvalidEventError] if event is invalid
+      # @raise [Error::InvalidActionError] if action is invalid
       def set_event(device, event, action)
         raise Error::InvalidEventError.new event unless validate_event?(event.upcase)
         raise Error::InvalidActionError.new action unless %w[CANCEL OK RETRY].include?(action.upcase)
@@ -58,6 +93,7 @@ module Evolis
         })
       end
 
+      # @return [Hash] list all possible minor states with grouping
       def list_states
         return {
             ERROR: ERROR_EVENTS,
@@ -67,6 +103,8 @@ module Evolis
         }
       end
 
+      # @return [Array] of descriptions for all minor state
+      # @raise [Error::InvalidEventError] if no minor state (event) is not found
       def print_event(event)
         list_states.each do |status, events|
           return events[event.to_sym] if events.has_key?(event.to_sym)
@@ -75,10 +113,12 @@ module Evolis
         raise Error::InvalidEventError.new event
       end
 
+      # @return [true, false] true if event exist, false if not
       def validate_event?(event)
         return ERROR_EVENTS.merge(WARNING_EVENTS).has_key?(event.to_sym)
       end
 
+      # All error events with description
       ERROR_EVENTS = {
           ERR_BLANK_TRACK: [
               'Magnetic encoding failed',
@@ -154,6 +194,7 @@ module Evolis
           ]
       }
 
+      # All warning events with description
       WARNING_EVENTS = {
           INF_RIBBON_LOW: [
               'Ribbon close to the end',
@@ -285,6 +326,7 @@ module Evolis
           ]
       }
 
+      # All ready events with description
       READY_EVENTS = {
           INF_CLEANING: [
               'Regular cleaning required'
@@ -325,6 +367,7 @@ module Evolis
           ]
       }
 
+      # All off events with description
       OFF_EVENTS = {
           PRINTER_NOT_SUPERVISED: [
               'Not supervised by Evolis Print Center'
