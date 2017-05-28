@@ -47,41 +47,146 @@ module Evolis
 
       # Settings and their values allowed to be used when getting and setting settings for print
       SETTINGS = {
-          GDuplexMode: %w[SIMPLEX DUPLEX_CC DUPLEX_CM DUPLEX_MC DUPLEX_MM],
-          GInputTray: %w[FEEDER AUTO MANUAL PRINTER],
-          GOutputTray: %w[HOPPER REAR PRINTER],
-          GRejectBox: %w[DEFAULTREJECT HOPPER PRINTER],
-          GRibbonType: %w[RC_YMCKO RC_YMCKOS RC_YMCKOK RC_YMCKOKOS RM_KO RM_KBLACK RM_KWHITE RM_KRED RM_KGREEN RM_KBLUE RM_KSCRATCH RM_KMETALSILVER RM_KMETALGOLD RM_KSIGNATURE RM_KWAX RM_KPREMIUM RM_HOLO],
-          GShortPanelManagement: %w[AUTO CUSTOM OFF],
-          GSmoothing: %w[STDSMOOTH ADVSMOOTH NOSMOOTH],
-          IGStrictPageSetup: %w[ON OFF],
-          FBlackManagement: %w[NOBLACKPOINT ALLBLACKPOINT TEXTINBLACK],
-          BBlackManagement: %w[NOBLACKPOINT ALLBLACKPOINT TEXTINBLACK],
-          FColorBrightness: (1..20).to_a.map! { |i| "VAL#{i}" },
-          BColorBrightness: (1..20).to_a.map! { |i| "VAL#{i}" },
-          FColorContrast: (1..20).to_a.map! { |i| "VAL#{i}" },
-          BColorContrast: (1..20).to_a.map! { |i| "VAL#{i}" },
-          FHalftoning: %w[THRESHOLD FLOYD DITHERING CLUSTERED_DITHERING],
-          BHalftoning: %w[THRESHOLD FLOYD DITHERING CLUSTERED_DITHERING],
-          FMonochromeContrast: (1..20).to_a.map! { |i| "VAL#{i}" },
-          BMonochromeContrast: (1..20).to_a.map! { |i| "VAL#{i}" },
-          FOverlayContrast: (1..20).to_a.map! { |i| "VAL#{i}" },
-          BOverlayContrast: (1..20).to_a.map! { |i| "VAL#{i}" },
-          FOverlayManagement: %w[NOVARNISH FULLVARNISH BMPVARNISH],
-          BOverlayManagement: %w[NOVARNISH FULLVARNISH BMPVARNISH],
-          FPageRotate180: %w[ON OFF],
-          BPageRotate180: %w[ON OFF],
-          GMagCoercivity: %w[OFF LOCO HICO],
-          GMagT1Encoding: %w[ISO1 ISO2 ISO3 SIPASS C2 JIS2 C4 NONE],
-          GMagT2Encoding: %w[ISO1 ISO2 ISO3 SIPASS C2 JIS2 C4 NONE],
-          GMagT3Encoding: %w[ISO1 ISO2 ISO3 SIPASS C2 JIS2 C4 NONE],
-          Track1Data: String,
-          Track2Data: String,
-          Track3Data: String,
-          Resolution: %w[DPI300 DPI600300 DPI1200300],
-          IShortPanelShift: /^[0-9]+$/,
-          Passthrough: String,
-          RawData: String,
+          GDuplexMode: {
+              validation: %w[SIMPLEX DUPLEX_CC DUPLEX_CM DUPLEX_MC DUPLEX_MM],
+              description: 'Front side and Back side settings'
+          },
+          GInputTray: {
+              validation: %w[FEEDER AUTO MANUAL PRINTER],
+              description: 'Card insertion'
+          },
+          GOutputTray: {
+              validation: %w[HOPPER REAR PRINTER],
+              description: 'Card exit'
+          },
+          GRejectBox: {
+              validation: %w[DEFAULTREJECT HOPPER PRINTER],
+              description: 'Rejected error card'
+          },
+          GRibbonType: {
+              validation: %w[RC_YMCKO RC_YMCKOS RC_YMCKOK RC_YMCKOKOS RM_KO RM_KBLACK RM_KWHITE RM_KRED RM_KGREEN RM_KBLUE RM_KSCRATCH RM_KMETALSILVER RM_KMETALGOLD RM_KSIGNATURE RM_KWAX RM_KPREMIUM RM_HOLO],
+              description: 'Ribbon type'
+          },
+          GShortPanelManagement: {
+              validation: %w[AUTO CUSTOM OFF],
+              description: 'Short panel management mode'
+          },
+          GSmoothing: {
+              validation: %w[STDSMOOTH ADVSMOOTH NOSMOOTH],
+              description: 'Smoothing mode'
+          },
+          IGStrictPageSetup: {
+              validation: %w[ON OFF],
+              description: 'Strict page setup mode'
+          },
+          FBlackManagement: {
+              validation: %w[NOBLACKPOINT ALLBLACKPOINT TEXTINBLACK],
+              description: 'Black panel management mode (front)'
+          },
+          BBlackManagement: {
+              validation: %w[NOBLACKPOINT ALLBLACKPOINT TEXTINBLACK],
+              description: 'Black panel management mode (back)'
+          },
+          FColorBrightness: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Brightness adjustment for color panel (front)'
+          },
+          BColorBrightness: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Brightness adjustment for color panel (back)'
+          },
+          FColorContrast: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Contrast adjustment for color panel (front)'
+          },
+          BColorContrast: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Contrast adjustment for color panel (back)'
+          },
+          FHalftoning: {
+              validation: %w[THRESHOLD FLOYD DITHERING CLUSTERED_DITHERING],
+              description: 'Black panel adjustment (front)'
+          },
+          BHalftoning: {
+              validation: %w[THRESHOLD FLOYD DITHERING CLUSTERED_DITHERING],
+              description: 'Black panel adjustment (back)'
+          },
+          FMonochromeContrast: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Monochrome resin adjustment (front)'
+          },
+          BMonochromeContrast: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Monochrome resin adjustment (back)'
+          },
+          FOverlayContrast: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Varnish adjustment (front)'
+          },
+          BOverlayContrast: {
+              validation: (1..20).to_a.map! { |i| "VAL#{i}" },
+              description: 'Varnish adjustment (back)'
+          },
+          FOverlayManagement: {
+              validation: %w[NOVARNISH FULLVARNISH BMPVARNISH],
+              description: 'Varnish type (front)'
+          },
+          BOverlayManagement: {
+              validation: %w[NOVARNISH FULLVARNISH BMPVARNISH],
+              description: 'Varnish type (back)'
+          },
+          FPageRotate180: {
+              validation: %w[ON OFF],
+              description: 'Rotate by 180° (front)'
+          },
+          BPageRotate180: {
+              validation: %w[ON OFF],
+              description: 'Rotate by 180° (back)'
+          },
+          GMagCoercivity: {
+              validation: %w[OFF LOCO HICO],
+              description: 'Magnetic coercivity'
+          },
+          GMagT1Encoding: {
+              validation: %w[ISO1 ISO2 ISO3 SIPASS C2 JIS2 C4 NONE],
+              description: 'Magnetic Track 1 mode'
+          },
+          GMagT2Encoding: {
+              validation: %w[ISO1 ISO2 ISO3 SIPASS C2 JIS2 C4 NONE],
+              description: 'Magnetic Track 2 mode'
+          },
+          GMagT3Encoding: {
+              validation: %w[ISO1 ISO2 ISO3 SIPASS C2 JIS2 C4 NONE],
+              description: 'Magnetic Track 3 mode'
+          },
+          Track1Data: {
+              validation: String,
+              description: 'Magnetic track 1 data'
+          },
+          Track2Data: {
+              validation: String,
+              description: 'Magnetic track 2 data'
+          },
+          Track3Data: {
+              validation: String,
+              description: 'Magnetic track 3 data'
+          },
+          Resolution: {
+              validation: %w[DPI300 DPI600300 DPI1200300],
+              description: 'Resolution'
+          },
+          IShortPanelShift: {
+              validation: /^[0-9]+$/,
+              description: 'Short panel management shift'
+          },
+          Passthrough: {
+              validation: String,
+              description: 'Passthrough/Raw data'
+          },
+          RawData: {
+              validation: String,
+              description: 'Passthrough/Raw data'
+          }
       }
 
       # Checks if settings supplied are valid
@@ -107,13 +212,25 @@ module Evolis
           unless key_only
             return false if !value
             return false if value.is_a?(String) && value.empty?
-            return false if SETTINGS[setting.to_sym].is_a?(Array) && !SETTINGS[setting.to_sym].include?(value)
-            return false if SETTINGS[setting.to_sym].is_a?(Class) && !value.is_a?(SETTINGS[setting.to_sym])
-            return false if SETTINGS[setting.to_sym].is_a?(Regexp) && value.is_a?(String) && value !~ SETTINGS[setting.to_sym]
+            return false if SETTINGS[setting.to_sym][:validation].is_a?(Array) && !SETTINGS[setting.to_sym][:validation].include?(value)
+            return false if SETTINGS[setting.to_sym][:validation].is_a?(Class) && !value.is_a?(SETTINGS[setting.to_sym][:validation])
+            return false if SETTINGS[setting.to_sym][:validation].is_a?(Regexp) && value.is_a?(String) && value !~ SETTINGS[setting.to_sym][:validation]
           end
 
           return true
         end
+      end
+
+      # @return [String] string of description or false if setting does not exist
+      # @raise [Error::InvalidPrintSettingError] on invalid print setting
+      def print_setting(setting)
+        return SETTINGS[setting.to_sym][:description] if SETTINGS.has_key?(setting.to_sym)
+        raise Error::InvalidPrintSettingError.new setting
+      end
+
+      # @return [Hash] of settings with descriptions
+      def list_settings
+        return SETTINGS.map{ |key, value| [key, value[:description]] }.to_h
       end
 
       # Basic checking for valid base64 string, as used in the SDK

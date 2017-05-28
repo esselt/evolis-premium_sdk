@@ -47,6 +47,20 @@ module Evolis::PremiumSdk
       end
     end
 
+    describe '#print_setting' do
+      it 'invalid setting __ERROR__ raise InvalidPrintSettingError' do
+        expect{resource.print_setting '__ERROR__'}.to raise_error(Error::InvalidPrintSettingError)
+      end
+
+      it 'valid setting GDuplexMode returns String' do
+        expect(resource.print_setting 'GDuplexMode').to be_kind_of(String)
+      end
+    end
+
+    it '#list_settings returns Hash' do
+      expect(resource.list_settings).to be_kind_of(Hash)
+    end
+
     describe '#valid_base64?' do
       it 'not string returns false' do
         expect(resource.valid_base64? %w[hello world]).to be false
